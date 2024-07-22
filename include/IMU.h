@@ -6,11 +6,12 @@ class IMU_hermes
 {
 public:
     IMU_hermes(uint8_t address = 0x4A);
+    BNO080 hermes;
     void begin();
     void update(int interval);
+    float quatI, quatJ, quatK, quatReal, quatRadianAccuracy;
 
 private:
-    BNO080 hermes;
     unsigned long previousTime;
     uint8_t i2cAddress;
     void getUpdate();
