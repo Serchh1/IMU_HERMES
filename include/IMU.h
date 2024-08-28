@@ -7,7 +7,7 @@ class IMU_hermes
 {
 public:
     IMU_hermes();
-    void updateData();
+    bool updateData();
     void begin();
     float quatI, quatJ, quatK, quatReal;
 

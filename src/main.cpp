@@ -18,7 +18,7 @@ void IMU_hermes::begin()
   myIMU.enableRotationVector(20);
 }
 
-void IMU_hermes::updateData() 
+bool IMU_hermes::updateData() 
 {
   if (myIMU.dataAvailable() == true) 
   {
@@ -26,9 +26,13 @@ void IMU_hermes::updateData()
     float quatJ = myIMU.getQuatJ();
     float quatK = myIMU.getQuatK();
     float quatReal = myIMU.getQuatReal();
+    return true;
   } 
   else 
   {
+    #ifdef DEBUG_LOG 
     Serial.println("No data available");
+    #endif
+    return false;
   }
 }
