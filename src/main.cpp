@@ -1,39 +1,33 @@
 #include <Arduino.h>
 #include <IMU.h>
-#include <Wire.h>
 
-IMU_hermes::IMU_hermes(uint8_t address) : i2cAddress(address),
-  previousTime(0), quatI(0), quatJ(0), quatK(0), quatReal(0), quatRadianAccuracy(0) {}
+IMU_hermes::IMU_hermes()
+    :quatI(0), quatJ(0), quatK(0), quatReal(0) {}
 
 void IMU_hermes::begin() 
 {
   // Init Serial Monitor
   Serial.begin(115200);
-  Wire.begin();
-  hermes.begin(i2cAddress);
-  Wire.setClock(400000);
-  hermes.enableRotationVector(10);
-}
-
-void IMU_hermes::update(int interval) 
-{
-  if ((millis() - previousTime) > interval) 
+    Wire.begin();
+  if (myIMU.begin(0x4A) == false)
   {
-    getUpdate();
-    previousTime = millis();
+    Serial.println("BNO080 not detected at default I2C address. Check your jumpers and the hookup guide. Freezing...");
+    while (1);
   }
+  Wire.setClock(400000);
+  myIMU.enableRotationVector(20);
 }
 
-void IMU_hermes::getUpdate() 
+void IMU_hermes::updateData() 
 {
-  if (hermes.dataAvailable() == true) 
+  if (myIMU.dataAvailable() == true) 
   {
-    float quatI = hermes.getQuatI();
-    float quatJ = hermes.getQuatJ();
-    float quatK = hermes.getQuatK();
-    float quatReal = hermes.getQuatReal();
-    float quatRadianAccuracy = hermes.getQuatRadianAccuracy();
-  } else 
+    float quatI = myIMU.getQuatI();
+    float quatJ = myIMU.getQuatJ();
+    float quatK = myIMU.getQuatK();
+    float quatReal = myIMU.getQuatReal();
+  } 
+  else 
   {
     Serial.println("No data available");
   }
